@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">LM3-StudyGroup</string>
+    <string name="app_name">Student Manager</string>
+    <string name="add_student">Add student</string>
 </resources>
