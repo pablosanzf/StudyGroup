@@ -2,4 +2,5 @@
 <resources>
     <string name="app_name">Gestión de estudiantes</string>
     <string name="add_student">Añadir estudiante</string>
+    <string name="settings">Configuración</string>
 </resources>
