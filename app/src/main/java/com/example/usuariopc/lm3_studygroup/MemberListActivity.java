@@ -20,16 +20,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class MemberListActivity extends ListActivity {
+public class MemberListActivity extends ListActivity implements Serializable {
 
     static final int SELECT_CONTACT = 1;
 
     private ArrayList<Student> arrStudents;
     private ArrayAdapter<Student> adpStudents;
     private int posicionClase = new Integer(0);
-
 
 
     //Sirve comonexo de unión entre la estructura de datos y
@@ -56,7 +56,7 @@ public class MemberListActivity extends ListActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu){
+    public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.member_list, menu);
         return true;
     }
@@ -86,8 +86,8 @@ public class MemberListActivity extends ListActivity {
                         {ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
                                 ContactsContract.CommonDataKinds.Phone.NUMBER}, null, null, null);
                 /*Y esto devuelve un cursor que además está situado en el punto -1 por ello se necesita el moveNext*/
-                if(cursor.moveToNext()){
-                    Log.i("Intent:",data.getDataString()); //Log es lo que utilicamos para sacar información por log
+                if (cursor.moveToNext()) {
+                    Log.i("Intent:", data.getDataString()); //Log es lo que utilicamos para sacar información por log
                     arrStudents.add(new Student(cursor.getString(0),
                             cursor.getString(1))); //Y aquí se añaden los datos de la tabla, siendo el nombre el 0 y el número el 1
                     adpStudents.notifyDataSetChanged(); //Método propio del adaptador que se autoreferesca
@@ -99,14 +99,25 @@ public class MemberListActivity extends ListActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.i("Stop", "Saving data");
+        (new StudentManager(getApplicationContext())).saveStudents(arrStudents);
+    }
 
 
     private void createStudentList() {
-        arrStudents = new ArrayList<Student>();
+        /*  arrStudents = new ArrayList<Student>();
         arrStudents.add(new Student("Jose Luis", "611111234"));
         arrStudents.add(new Student("Ibai", "22222222"));
         arrStudents.add(new Student("Itziar", "33333333"));
-        arrStudents.add(new Student("Irene", "44444444"));
+        arrStudents.add(new Student("Irene", "44444444"));*/
+
+        arrStudents = (new StudentManager(getApplicationContext())).loadStudents();
+        if (arrStudents == null) {
+            arrStudents = new ArrayList<Student>();
+        }
     }
 
     @Override
@@ -152,11 +163,6 @@ public class MemberListActivity extends ListActivity {
                 return;
         }
     }
-
-
-
-
-
 
 
 }
